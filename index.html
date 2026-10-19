@@ -133,7 +133,7 @@
     .badge-status {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       background: #14151b;
       border: 1px solid var(--border-subtle);
       padding: 6px 12px;
@@ -141,13 +141,64 @@
       font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .badge-status:hover {
+      background: #1a1c24;
+      border-color: #333644;
     }
 
     .status-dot {
       width: 6px;
       height: 6px;
-      background: var(--success);
       border-radius: 50%;
+      background: #52525b;
+      flex-shrink: 0;
+      transition: background 0.25s;
+    }
+
+    /* Live status states */
+    .badge-status[data-state="checking"] .status-dot {
+      background: #71717a;
+      animation: pulse-dot 1.1s ease-in-out infinite;
+    }
+    .badge-status[data-state="checking"] {
+      color: var(--text-muted);
+    }
+
+    .badge-status[data-state="online"] {
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .badge-status[data-state="online"] .status-dot {
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
+    }
+
+    .badge-status[data-state="degraded"] {
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .badge-status[data-state="degraded"] .status-dot {
+      background: var(--warning);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.14);
+    }
+
+    .badge-status[data-state="offline"] {
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .badge-status[data-state="offline"] .status-dot {
+      background: var(--danger);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
     }
 
     /* Main Container */
@@ -674,9 +725,9 @@
         <a class="nav-link" onclick="switchMainTab('file')">Files</a>
         <a class="nav-link" onclick="switchMainTab('url')">URLs</a>
         <a class="nav-link" onclick="switchMainTab('search')">Lookup</a>
-        <div class="badge-status">
+        <div class="badge-status" id="feed-status" data-state="checking" onclick="checkFeedStatus(true)" title="Click to re-check backend connectivity">
           <div class="status-dot"></div>
-          Threat Feeds Active
+          <span id="feed-status-text">Checking…</span>
         </div>
       </div>
     </div>
@@ -888,6 +939,127 @@
 
     let activeReport = null;
 
+    /* ============================================================
+       LIVE BACKEND STATUS INDICATOR
+       Pings /api/scan on load and reflects the real state.
+       ============================================================ */
+    const FEED_BADGE = document.getElementById('feed-status');
+    const FEED_TEXT  = document.getElementById('feed-status-text');
+
+    /* ------------------------------------------------------------
+       API RESOLVER
+       Deployed on Vercel  -> same-origin relative path (/api/scan)
+       Opened from disk or another host -> fall back to production
+       ------------------------------------------------------------ */
+    const PROD_ORIGIN = 'https://scan.auguxt.dev';
+
+    function apiUrl() {
+      const local = location.protocol === 'file:' ||
+                    location.hostname === 'localhost' ||
+                    location.hostname === '127.0.0.1' ||
+                    location.hostname === '';
+      return (local ? PROD_ORIGIN : '') + '/api/scan';
+    }
+
+
+    function setFeedState(state, label, tooltip) {
+      FEED_BADGE.dataset.state = state;
+      FEED_TEXT.textContent = label;
+      if (tooltip) FEED_BADGE.title = tooltip;
+      if (state !== 'checking') {
+        try {
+          sessionStorage.setItem(FEED_CACHE_KEY,
+            JSON.stringify({ state, label, tooltip, at: Date.now() }));
+        } catch (_) {}
+      }
+    }
+
+    const FEED_CACHE_KEY = 'auguxtscan_feed_status';
+    const FEED_CACHE_TTL = 5 * 60 * 1000; // 5 minutes — protects the free-tier quota
+
+    async function checkFeedStatus(manual) {
+      if (manual) setFeedState('checking', 'Checking…', 'Re-testing connection…');
+
+      // Serve a recent result without burning a VirusTotal request
+      if (!manual) {
+        try {
+          const cached = JSON.parse(sessionStorage.getItem(FEED_CACHE_KEY) || 'null');
+          if (cached && Date.now() - cached.at < FEED_CACHE_TTL) {
+            setFeedState(cached.state, cached.label, cached.tooltip);
+            return cached.state;
+          }
+        } catch (_) {}
+      }
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+
+      try {
+        const res = await fetch(apiUrl(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'domain', query: 'google.com' }),
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+
+        if (res.ok) {
+          setFeedState('online', 'Threat Feeds Live',
+            'Connected to 72+ engines via VirusTotal v3.');
+          return 'online';
+        }
+
+        let body = null;
+        try { body = await res.json(); } catch (_) {}
+
+        if (res.status === 503) {
+          setFeedState('degraded', 'API Key Missing',
+            'Backend is deployed, but VIRUSTOTAL_API_KEY is not set in Vercel.');
+          return 'degraded';
+        }
+        if (res.status === 401 || res.status === 403) {
+          setFeedState('degraded', 'Key Rejected',
+            'VirusTotal rejected the API key — invalid or quota exceeded.');
+          return 'degraded';
+        }
+        if (res.status === 400) {
+          setFeedState('degraded', 'Backend Alive, No Key Check',
+            'The function responded but rejected the probe request.');
+          return 'degraded';
+        }
+        if (res.status === 404) {
+          setFeedState('offline', 'Function Not Found',
+            'api/scan.js is not deployed. Expected at the repo root under api/.');
+          return 'offline';
+        }
+
+        setFeedState('degraded', `Error ${res.status}`,
+          (body && body.message) || `Backend returned HTTP ${res.status}.`);
+        return 'degraded';
+
+      } catch (err) {
+        clearTimeout(timer);
+        setFeedState('offline', 'Feeds Offline',
+          err.name === 'AbortError'
+            ? 'Request timed out after 8s.'
+            : 'Cannot reach /api/scan — running in local heuristic mode.');
+        return 'offline';
+      }
+    }
+
+    // Reflect real scan results on the badge too
+    function markFeedLive() {
+      if (FEED_BADGE.dataset.state !== 'online') {
+        setFeedState('online', 'Threat Feeds Live', 'Live VirusTotal data confirmed.');
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', () => checkFeedStatus(false));
+    } else {
+      checkFeedStatus(false);
+    }
+
     function switchMainTab(tab) {
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -947,19 +1119,49 @@
     // Call /api/scan backend
     async function fetchBackendScan(type, query) {
       try {
-        const res = await fetch('/api/scan', {
+        const res = await fetch(apiUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type, query })
         });
         if (res.ok) {
           const json = await res.json();
-          return json.data;
+          if (json.data) {
+            window._liveScanHit = true;
+            markFeedLive();
+            return json.data;
+          }
+          // 200 but not found in VT database — connection is still healthy
+          window._liveScanHit = true;
+          markFeedLive();
+          return null;
         }
+        console.warn('Backend returned HTTP', res.status, '— falling back to local heuristics.');
+        window._liveScanHit = false;
       } catch (err) {
-        console.warn('Backend proxy offline, applying heuristics:', err);
+        console.warn('Backend unavailable — running in local heuristic mode:', err);
+        window._liveScanHit = false;
       }
       return null;
+    }
+
+    // Honest mode banner: makes clear when a result is heuristic, not live intel
+    function flagHeuristicMode() {
+      const existing = document.getElementById('heuristic-warn');
+      if (existing) existing.remove();
+
+      if (window._liveScanHit) return;
+
+      const el = document.getElementById('res-tag-status');
+      if (!el) return;
+
+      const warn = document.createElement('div');
+      warn.id = 'heuristic-warn';
+      warn.style.cssText = 'margin-top:12px;font-size:.78rem;color:var(--warning);' +
+        'background:var(--warning-bg);border:1px solid rgba(245,158,11,.3);' +
+        'border-radius:6px;padding:8px 12px;line-height:1.5;max-width:420px;';
+      warn.textContent = 'Offline heuristic mode — the backend is unreachable, so this verdict was estimated locally. It is NOT live multi-engine threat intelligence.';
+      el.parentElement.after(warn);
     }
 
     // Process File
@@ -1121,6 +1323,10 @@
 
     // Animation runner
     function triggerScanAnimation(targetName, sizeStr) {
+      window._liveScanHit = false;
+      const stale = document.getElementById('heuristic-warn');
+      if (stale) stale.remove();
+
       document.getElementById('view-home').style.display = 'none';
       document.getElementById('view-results').style.display = 'none';
       document.getElementById('view-scanning').style.display = 'block';
@@ -1229,6 +1435,7 @@
           });
         }
 
+        flagHeuristicMode();
         switchSubTab('detection');
       }, 300);
     }
@@ -1245,5 +1452,5 @@
       a.remove();
     }
   </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4d1ecbd78a80b44',t:'MTc5MjQzNTM2OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
