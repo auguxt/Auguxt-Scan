@@ -3,37 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MeowScanner 🐾 // Multi-Engine Threat & Malware Analysis</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b5cf6'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/></svg>">
+  <title>AuguxtScan // Multi-Engine Threat & Malware Analysis</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.54-3.14 8.78-7 9.88-3.86-1.1-7-5.34-7-9.88V6.3l7-3.12zM11 7h2v6h-2zm0 8h2v2h-2z'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-black: #090a0f;
-      --bg-surface: #12131c;
-      --bg-surface-elevated: #181926;
-      --border-subtle: #232538;
-      --border-focus: #7c3aed;
+      --bg-void: #09090b;
+      --bg-card: #111216;
+      --bg-card-hover: #16181f;
+      --border-subtle: #22242c;
+      --border-focus: #3b3f4f;
       
-      --purple-primary: #8b5cf6;
-      --purple-hover: #7c3aed;
-      --purple-glow: rgba(139, 92, 246, 0.25);
-      
+      --purple-accent: #8b5cf6;
       --orange-accent: #f97316;
-      --orange-hover: #ea580c;
-      --orange-soft: rgba(249, 115, 22, 0.15);
       
       --text-pure: #ffffff;
-      --text-muted: #9ca3af;
-      --text-dark: #6b7280;
+      --text-muted: #a1a1aa;
+      --text-dark: #71717a;
       
       --success: #10b981;
-      --success-bg: rgba(16, 185, 129, 0.12);
+      --success-bg: rgba(16, 185, 129, 0.1);
       --danger: #ef4444;
-      --danger-bg: rgba(239, 68, 68, 0.12);
+      --danger-bg: rgba(239, 68, 68, 0.1);
       --warning: #f59e0b;
-      --warning-bg: rgba(245, 158, 11, 0.12);
+      --warning-bg: rgba(245, 158, 11, 0.1);
     }
 
     * {
@@ -44,41 +39,20 @@
     }
 
     body {
-      background-color: var(--bg-black);
+      background-color: var(--bg-void);
       color: var(--text-pure);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-    }
-
-    /* Ambient Glow Spots */
-    .glow-purple {
-      position: fixed;
-      top: -10%;
-      left: 15%;
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .glow-orange {
-      position: fixed;
-      bottom: -10%;
-      right: 10%;
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
     /* Header Nav */
     header {
-      background: rgba(9, 10, 15, 0.85);
-      backdrop-filter: blur(16px);
+      background: rgba(9, 9, 11, 0.9);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
@@ -89,7 +63,7 @@
     .nav-inner {
       max-width: 1200px;
       margin: 0 auto;
-      height: 72px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -104,29 +78,37 @@
       cursor: pointer;
     }
 
-    .brand-badge {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, var(--purple-primary), var(--orange-accent));
-      border-radius: 10px;
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: #181920;
+      border: 1px solid #2e313d;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
-      box-shadow: 0 4px 14px var(--purple-glow);
-    }
-
-    .brand-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.4px;
       color: #ffffff;
     }
 
-    .brand-title span {
-      background: linear-gradient(135deg, var(--purple-primary), var(--orange-accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title .tag {
+      font-size: 0.68rem;
+      background: #1e2029;
+      border: 1px solid #2e313d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .nav-actions {
@@ -138,7 +120,7 @@
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       transition: color 0.2s;
@@ -152,26 +134,26 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: var(--bg-surface);
+      background: #14151b;
       border: 1px solid var(--border-subtle);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: var(--success);
       border-radius: 50%;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
     }
 
     /* Main Container */
     main {
       flex: 1;
-      max-width: 1080px;
+      max-width: 1040px;
       width: 100%;
       margin: 0 auto;
       padding: 3.5rem 1.5rem;
@@ -182,27 +164,26 @@
     /* Hero */
     .hero-wrap {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.25rem;
     }
 
-    .pill-tag {
+    .badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--orange-soft);
-      border: 1px solid rgba(249, 115, 22, 0.3);
-      color: var(--orange-accent);
-      padding: 6px 14px;
+      gap: 6px;
+      background: #14151b;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 5px 12px;
       border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       margin-bottom: 1.25rem;
     }
 
     .hero-heading {
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.2;
@@ -210,49 +191,43 @@
       color: #ffffff;
     }
 
-    .hero-heading span {
-      background: linear-gradient(135deg, #ffffff, #c4b5fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
     .hero-sub {
       color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 600px;
+      font-size: 1rem;
+      max-width: 580px;
       margin: 0 auto;
       line-height: 1.6;
     }
 
     /* Scanner Card */
     .scanner-box {
-      background: var(--bg-surface);
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
     .scanner-nav {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      background: rgba(10, 11, 18, 0.8);
+      background: #0d0e12;
       border-bottom: 1px solid var(--border-subtle);
     }
 
     .nav-tab {
       background: transparent;
       border: none;
-      padding: 18px 12px;
+      padding: 16px 12px;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      border-bottom: 3px solid transparent;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
       transition: all 0.2s ease;
     }
 
@@ -263,12 +238,8 @@
 
     .nav-tab.active {
       color: #ffffff;
-      background: var(--bg-surface);
-      border-bottom-color: var(--purple-primary);
-    }
-
-    .nav-tab.active svg {
-      stroke: var(--purple-primary);
+      background: var(--bg-card);
+      border-bottom-color: #ffffff;
     }
 
     .tab-content {
@@ -282,79 +253,76 @@
 
     /* Drop Zone */
     .dropzone-container {
-      border: 2px dashed #2b2e47;
-      border-radius: 16px;
+      border: 1px dashed #2e313d;
+      border-radius: 12px;
       padding: 3.5rem 2rem;
-      background: rgba(14, 15, 24, 0.6);
+      background: #0c0d11;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 14px;
       text-align: center;
     }
 
     .dropzone-container:hover, .dropzone-container.dragover {
-      border-color: var(--purple-primary);
-      background: rgba(139, 92, 246, 0.04);
-      transform: translateY(-2px);
+      border-color: #52586b;
+      background: #111318;
     }
 
     .dropzone-icon {
-      width: 64px;
-      height: 64px;
-      background: rgba(139, 92, 246, 0.15);
-      border-radius: 16px;
+      width: 52px;
+      height: 52px;
+      background: #181a22;
+      border: 1px solid #282b37;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--purple-primary);
+      color: #ffffff;
     }
 
-    .btn-brand-primary {
-      background: linear-gradient(135deg, var(--purple-primary), var(--purple-hover));
-      color: white;
-      padding: 12px 28px;
-      border-radius: 10px;
-      font-size: 0.95rem;
+    .btn-action-primary {
+      background: #ffffff;
+      color: #000000;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
       font-weight: 700;
       border: none;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 14px var(--purple-glow);
     }
 
-    .btn-brand-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px var(--purple-glow);
+    .btn-action-primary:hover {
+      background: #e4e4e7;
     }
 
     /* Text Inputs (URL & Search) */
     .input-row {
       display: flex;
-      max-width: 680px;
+      max-width: 660px;
       margin: 1.5rem auto 0;
       position: relative;
     }
 
     .field-input {
       width: 100%;
-      padding: 18px 60px 18px 22px;
-      background: #0d0e17;
+      padding: 16px 56px 16px 18px;
+      background: #0c0d11;
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+      border-radius: 10px;
       color: #ffffff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
       font-family: 'JetBrains Mono', monospace;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s;
     }
 
     .field-input:focus {
-      border-color: var(--purple-primary);
-      box-shadow: 0 0 0 3px var(--purple-glow);
+      border-color: #52586b;
     }
 
     .field-input::placeholder {
@@ -364,70 +332,71 @@
 
     .btn-input-go {
       position: absolute;
-      right: 8px;
+      right: 6px;
       top: 50%;
       transform: translateY(-50%);
-      background: var(--purple-primary);
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+      background: #1e2029;
+      border: 1px solid #2e313d;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
+      transition: all 0.2s;
     }
 
     .btn-input-go:hover {
-      background: var(--orange-accent);
-      transform: translateY(-50%) scale(1.05);
+      background: #ffffff;
+      color: #000000;
     }
 
     .disclaimer-text {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-dark);
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
       text-align: center;
-      line-height: 1.5;
     }
 
     /* Scanning Progress Screen */
     #view-scanning {
       display: none;
       text-align: center;
-      padding: 4.5rem 2rem;
+      padding: 4rem 2rem;
     }
 
-    .pulsing-cat {
-      font-size: 3.5rem;
-      margin-bottom: 1.5rem;
-      display: inline-block;
-      animation: bounceCat 1.2s infinite ease-in-out;
+    .spinner-ring {
+      width: 44px;
+      height: 44px;
+      border: 3px solid #1f212a;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      animation: spin 0.8s linear infinite;
     }
 
-    @keyframes bounceCat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .progress-track {
       width: 100%;
-      max-width: 480px;
-      height: 8px;
-      background: #1e2030;
+      max-width: 440px;
+      height: 6px;
+      background: #181a22;
       border-radius: 999px;
-      margin: 1.5rem auto;
+      margin: 1.25rem auto;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--purple-primary), var(--orange-accent));
+      background: #ffffff;
       border-radius: 999px;
-      transition: width 0.25s ease;
+      transition: width 0.2s ease;
     }
 
     /* Results Screen */
@@ -436,34 +405,34 @@
     }
 
     .results-hero-card {
-      background: var(--bg-surface);
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      padding: 2.25rem;
-      margin-bottom: 2rem;
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 2rem;
+      gap: 1.5rem;
     }
 
     .verdict-cluster {
       display: flex;
       align-items: center;
-      gap: 1.75rem;
+      gap: 1.5rem;
     }
 
     .verdict-gauge {
-      width: 96px;
-      height: 96px;
+      width: 84px;
+      height: 84px;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      border: 6px solid var(--success);
+      border: 4px solid var(--success);
       color: var(--success);
       background: var(--success-bg);
       flex-shrink: 0;
@@ -476,79 +445,79 @@
     }
 
     .gauge-num {
-      font-size: 2rem;
+      font-size: 1.75rem;
       line-height: 1;
     }
 
     .gauge-denom {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       opacity: 0.8;
       font-weight: 700;
     }
 
     .verdict-meta h2 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 6px;
       word-break: break-all;
     }
 
     .tag-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .code-tag {
-      background: #1a1c2b;
+      background: #14151b;
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
     }
 
     .action-group {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     .btn-secondary {
-      background: #181926;
+      background: #14151b;
       color: #ffffff;
       border: 1px solid var(--border-subtle);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s;
     }
 
     .btn-secondary:hover {
-      border-color: var(--purple-primary);
-      background: #202235;
+      background: #1f212a;
+      border-color: #333644;
     }
 
     /* Sub Tabs (Detection / Details) */
     .subtabs-nav {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .subtab-btn {
       background: transparent;
       border: none;
-      padding: 14px 20px;
+      padding: 12px 16px;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       border-bottom: 2px solid transparent;
@@ -557,46 +526,40 @@
 
     .subtab-btn.active {
       color: #ffffff;
-      border-bottom-color: var(--orange-accent);
+      border-bottom-color: #ffffff;
     }
 
     /* Vendor Grid */
     .engines-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 10px;
     }
 
     .engine-card {
-      background: var(--bg-surface);
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 14px 18px;
+      border-radius: 8px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: transform 0.15s;
-    }
-
-    .engine-card:hover {
-      transform: translateY(-1px);
-      border-color: #2e314a;
     }
 
     .engine-name {
-      font-weight: 700;
-      font-size: 0.9rem;
+      font-weight: 600;
+      font-size: 0.88rem;
       color: #ffffff;
     }
 
     .engine-status {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
+      gap: 5px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
     }
 
     .engine-clean {
@@ -611,18 +574,18 @@
 
     /* Details Box */
     .card-box {
-      background: var(--bg-surface);
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 1.75rem;
-      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .box-header {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--purple-primary);
-      margin-bottom: 1.25rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -632,9 +595,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
     }
 
     .prop-row:last-child {
@@ -643,7 +606,7 @@
 
     .prop-label {
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 500;
     }
 
     .prop-val {
@@ -658,10 +621,10 @@
     /* Footer */
     footer {
       border-top: 1px solid var(--border-subtle);
-      background: #08080c;
-      padding: 2.25rem 1.5rem;
+      background: #08080a;
+      padding: 2rem 1.5rem;
       text-align: center;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       color: var(--text-dark);
       margin-top: auto;
       position: relative;
@@ -669,13 +632,13 @@
     }
 
     footer a {
-      color: var(--purple-primary);
+      color: #ffffff;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     footer a:hover {
-      color: var(--orange-accent);
+      text-decoration: underline;
     }
 
     @media (max-width: 640px) {
@@ -694,15 +657,17 @@
 </head>
 <body>
 
-  <div class="glow-purple"></div>
-  <div class="glow-orange"></div>
-
   <!-- Header -->
   <header>
     <div class="nav-inner">
       <div class="brand" onclick="goHome()">
-        <div class="brand-badge">🐾</div>
-        <div class="brand-title">Meow<span>Scanner</span></div>
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-title">
+          AUGUXT<span>SCAN</span>
+          <span class="tag">v2.0</span>
+        </div>
       </div>
 
       <div class="nav-actions">
@@ -711,7 +676,7 @@
         <a class="nav-link" onclick="switchMainTab('search')">Lookup</a>
         <div class="badge-status">
           <div class="status-dot"></div>
-          Engine Active
+          Threat Feeds Active
         </div>
       </div>
     </div>
@@ -723,24 +688,24 @@
     <!-- Home Scanner View -->
     <div id="view-home">
       <div class="hero-wrap">
-        <div class="pill-tag">🐾 Multi-Engine Threat Intelligence</div>
-        <h1 class="hero-heading">Detect Malware, URLs & Threat <span>Binaries</span></h1>
-        <p class="hero-sub">Fast, privacy-friendly multi-engine threat analyzer powered by cryptographic hashing and 72+ global security intelligence feeds.</p>
+        <div class="badge-pill">🛡️ Multi-Engine Threat Intelligence</div>
+        <h1 class="hero-heading">Analyze Suspicious Files & URLs</h1>
+        <p class="hero-sub">Privacy-preserving binary hashing and threat consensus powered by 72+ global security intelligence feeds.</p>
       </div>
 
       <div class="scanner-box">
         <div class="scanner-nav">
           <button class="nav-tab active" id="tab-btn-file" onclick="switchMainTab('file')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
             FILE SCAN
           </button>
           <button class="nav-tab" id="tab-btn-url" onclick="switchMainTab('url')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             URL SCAN
           </button>
           <button class="nav-tab" id="tab-btn-search" onclick="switchMainTab('search')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            SEARCH HASH
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            HASH LOOKUP
           </button>
         </div>
 
@@ -749,51 +714,51 @@
           <input type="file" id="real-file-input" style="display:none;" onchange="onFilePicked(event)">
           <div class="dropzone-container" id="file-dropzone" onclick="document.getElementById('real-file-input').click()">
             <div class="dropzone-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
             <div>
-              <p style="font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; color: #ffffff;">Choose a file or drag & drop</p>
-              <p style="font-size: 0.88rem; color: var(--text-muted);">Binaries, scripts, documents up to 650 MB</p>
+              <p style="font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; color: #ffffff;">Choose a file or drag & drop</p>
+              <p style="font-size: 0.82rem; color: var(--text-muted);">Binaries, scripts, documents up to 650 MB</p>
             </div>
-            <button class="btn-brand-primary" type="button">Select File</button>
+            <button class="btn-action-primary" type="button">Select File</button>
           </div>
-          <p class="disclaimer-text">Files are hashed client-side in your browser memory before inspection.</p>
+          <p class="disclaimer-text">Files are hashed client-side in browser memory before querying.</p>
         </div>
 
         <!-- URL Tab -->
         <div class="tab-content" id="tab-content-url">
           <form class="input-row" onsubmit="event.preventDefault(); startUrlScan();">
-            <input type="text" id="target-url-input" class="field-input" placeholder="https://example.com or malicious-domain.xyz" autocomplete="off" spellcheck="false" required>
+            <input type="text" id="target-url-input" class="field-input" placeholder="https://example.com or suspicious-link.com" autocomplete="off" spellcheck="false" required>
             <button type="submit" class="btn-input-go" title="Run Scan">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
           </form>
-          <p class="disclaimer-text">Inspects web endpoints against phishing signatures, malicious DNS records, and SSL reputation.</p>
+          <p class="disclaimer-text">Inspects web endpoints against phishing signatures, malicious DNS, and blacklists.</p>
         </div>
 
         <!-- Search Tab -->
         <div class="tab-content" id="tab-content-search">
           <form class="input-row" onsubmit="event.preventDefault(); startSearchScan();">
-            <input type="text" id="target-search-input" class="field-input" placeholder="SHA-256, MD5 hash, IPv4 or domain..." autocomplete="off" spellcheck="false" required>
+            <input type="text" id="target-search-input" class="field-input" placeholder="SHA-256, MD5, IPv4 address, or domain..." autocomplete="off" spellcheck="false" required>
             <button type="submit" class="btn-input-go" title="Search Intelligence">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </button>
           </form>
-          <p class="disclaimer-text">Lookup pre-computed threat profiles by SHA-256 / MD5 hash or IP address.</p>
+          <p class="disclaimer-text">Lookup pre-computed threat reports by cryptographic hash or IP address.</p>
         </div>
       </div>
     </div>
 
     <!-- Scanning State View -->
     <div id="view-scanning">
-      <div class="pulsing-cat">🐾</div>
-      <h2 style="font-size: 1.6rem; font-weight:800; margin-bottom: 0.5rem;" id="scan-title-text">Inspecting Target...</h2>
-      <p style="color: var(--text-muted); font-size: 0.95rem;" id="scan-sub-text">Extracting telemetry & querying threat engines...</p>
+      <div class="spinner-ring"></div>
+      <h2 style="font-size: 1.4rem; font-weight:700; margin-bottom: 0.4rem;" id="scan-title-text">Inspecting Target...</h2>
+      <p style="color: var(--text-muted); font-size: 0.88rem;" id="scan-sub-text">Extracting telemetry & comparing against 72 threat engines...</p>
       
       <div class="progress-track">
         <div class="progress-fill" id="bar-fill"></div>
       </div>
-      <p style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: var(--purple-primary);" id="scan-target-repr">Target: ...</p>
+      <p style="font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);" id="scan-target-repr">Target: ...</p>
     </div>
 
     <!-- Results View -->
@@ -818,11 +783,11 @@
 
         <div class="action-group">
           <button class="btn-secondary" onclick="goHome()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             New Scan
           </button>
           <button class="btn-secondary" onclick="downloadJsonReport()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Export JSON
           </button>
         </div>
@@ -844,7 +809,7 @@
       <div id="subview-details" style="display:none;">
         <div class="card-box">
           <div class="box-header">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             Cryptographic Checksums
           </div>
           <div class="prop-row">
@@ -862,8 +827,8 @@
         </div>
 
         <div class="card-box">
-          <div class="box-header" style="color:var(--orange-accent);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          <div class="box-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Heuristic & Metadata Analysis
           </div>
           <div class="prop-row">
@@ -872,11 +837,11 @@
           </div>
           <div class="prop-row">
             <span class="prop-label">Entropy Score</span>
-            <span class="prop-val">6.91 bits (Normal binary distribution)</span>
+            <span class="prop-val">6.91 bits (Standard binary distribution)</span>
           </div>
           <div class="prop-row">
             <span class="prop-label">Threat Severity</span>
-            <span class="prop-val" id="det-threat-lvl">0 / 100 (Safe)</span>
+            <span class="prop-val" id="det-threat-lvl">0 / 72 (Safe)</span>
           </div>
         </div>
       </div>
@@ -884,9 +849,9 @@
       <!-- SubTab: Community -->
       <div id="subview-community" style="display:none;">
         <div class="card-box">
-          <div class="box-header">🐾 Meow Community Reputation</div>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">This artifact matches verified safe signatures. No behavioral anomalies detected by automated sandboxes.</p>
-          <div style="display:flex; gap:12px;">
+          <div class="box-header">Community Reputation</div>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">This artifact matches verified safe signatures. No behavioral anomalies detected by automated sandboxes.</p>
+          <div style="display:flex; gap:10px;">
             <button class="btn-secondary" style="color:var(--success); border-color:var(--success);" onclick="alert('Reputation vote recorded: Harmless ✅')">👍 Vote Safe</button>
             <button class="btn-secondary" style="color:var(--danger); border-color:var(--danger);" onclick="alert('Reputation vote recorded: Suspicious ⚠️')">👎 Flag Suspicious</button>
           </div>
@@ -899,7 +864,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>MeowScanner 🐾 • Engineered with Security & Precision by <a href="https://auguxt.dev" target="_blank">@auguxt</a> // Syed Sameer</p>
+    <p>AuguxtScan • Engineered with Security & Precision by <a href="https://auguxt.dev" target="_blank">Syed Sameer</a> // auguxt.dev</p>
   </footer>
 
   <script>
@@ -967,7 +932,7 @@
       if (e.target.files.length > 0) analyzeFile(e.target.files[0]);
     }
 
-    // Real Web Crypto SHA-256 calculation
+    // Web Crypto SHA-256
     async function hashBuffer(buffer) {
       const hash = await crypto.subtle.digest('SHA-256', buffer);
       return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -979,7 +944,7 @@
       return Math.abs(h).toString(16).padStart(32, 'd41d8');
     }
 
-    // Query Vercel Backend /api/scan
+    // Call /api/scan backend
     async function fetchBackendScan(type, query) {
       try {
         const res = await fetch('/api/scan', {
@@ -992,7 +957,7 @@
           return json.data;
         }
       } catch (err) {
-        console.warn('Backend /api/scan not reachable, using heuristic engine:', err);
+        console.warn('Backend proxy offline, applying heuristics:', err);
       }
       return null;
     }
@@ -1006,7 +971,7 @@
       const md5 = fastHash(file.name + file.size + sha256.slice(0, 10));
       const sha1 = fastHash(sha256).slice(0, 40);
 
-      // Try Vercel Backend first
+      // Check Vercel Backend
       const liveVtData = await fetchBackendScan('hash', sha256);
 
       if (liveVtData && liveVtData.attributes) {
@@ -1060,7 +1025,7 @@
 
       triggerScanAnimation(url, 'Web Endpoint');
 
-      // Try Vercel Backend first
+      // Check Vercel Backend
       const liveVtData = await fetchBackendScan('url', url);
 
       if (liveVtData && liveVtData.attributes) {
@@ -1118,7 +1083,7 @@
 
       triggerScanAnimation(q, 'Database Lookup');
 
-      // Try Vercel Backend first
+      // Check Vercel Backend
       const liveVtData = await fetchBackendScan('search', q);
 
       if (liveVtData && liveVtData.attributes) {
@@ -1231,10 +1196,10 @@
               <span class="engine-name">${res.engine_name || engineName}</span>
               <span class="engine-status ${isBad ? 'engine-threat' : 'engine-clean'}">
                 ${isBad ? `
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   ${res.result || 'Malicious'}
                 ` : `
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   Clean
                 `}
               </span>
@@ -1252,10 +1217,10 @@
               <span class="engine-name">${engine}</span>
               <span class="engine-status ${isFlagged ? 'engine-threat' : 'engine-clean'}">
                 ${isFlagged ? `
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   ${data.threatTag}
                 ` : `
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   Clean
                 `}
               </span>
@@ -1274,7 +1239,7 @@
       const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activeReport, null, 2));
       const a = document.createElement('a');
       a.href = jsonStr;
-      a.download = `meowscan_${Date.now()}.json`;
+      a.download = `auguxtscan_report_${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
