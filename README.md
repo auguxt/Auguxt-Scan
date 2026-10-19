@@ -1,110 +1,148 @@
-# 🐾 MeowScanner — Multi-Engine Threat & Malware Analysis
-
 <div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-purple.svg?style=for-the-badge)
-![Live](https://img.shields.io/badge/Live_URL-scan.auguxt.dev-f97316.svg?style=for-the-badge)
-![VirusTotal v3](https://img.shields.io/badge/VirusTotal_API-v3_Integrated-8b5cf6.svg?style=for-the-badge)
-![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black.svg?style=for-the-badge&logo=vercel)
+# AuguxtScan 🛡️
+### Multi-Engine Threat Intelligence & Malware Analysis Platform
 
-**A sleek, privacy-focused threat intelligence and multi-engine malware scanner.**  
-*Inspect suspicious files, malicious URLs, domains, and cryptographic hashes across 72+ global security feeds.*
+[![License: MIT](https://img.shields.io/badge/License-MIT-09090b.svg?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Live Production](https://img.shields.io/badge/Live-scan.auguxt.dev-18181b.svg?style=for-the-badge&logo=cloudflare&logoColor=white)](https://scan.auguxt.dev/)
+[![Threat Engine](https://img.shields.io/badge/Engine-VirusTotal_v3-7c3aed.svg?style=for-the-badge)](https://docs.virustotal.com/)
+[![Deployment](https://img.shields.io/badge/Deploy-Vercel_Edge-000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-👉 **[Launch MeowScanner Live](https://scan.auguxt.dev/)**
+**Privacy-preserving binary hashing and threat consensus powered by 72+ global security feeds.**
+
+[**Launch AuguxtScan Live**](https://scan.auguxt.dev/) • [**Report Vulnerability**](https://github.com/auguxt/Auguxt-Scan/issues) • [**Portfolio**](https://auguxt.dev/)
 
 </div>
 
 ---
 
-## 🌟 Overview
+## 📌 Overview
 
-**MeowScanner** is an open-source cybersecurity web application engineered for analysts, developers, and everyday users to quickly inspect suspicious artifacts without compromising privacy or leaking API keys.
+**AuguxtScan** is a cloud-native cybersecurity intelligence platform engineered for security analysts, engineers, and developers. It allows users to rapidly assess suspicious files, malicious URLs, domains, and cryptographic hashes without compromising confidential data or exposing proprietary API credentials.
 
-By combining browser-side **Web Crypto API** hashing with **Vercel Serverless Functions**, MeowScanner generates cryptographic fingerprints locally in memory before querying cloud intelligence feeds across 72+ top antivirus vendors.
-
----
-
-## ✨ Features
-
-- 📁 **Client-Side File Hashing:** Computes cryptographic `SHA-256`, `MD5`, and `SHA-1` checksums locally in browser memory without unneeded raw binary uploads.
-- 🌐 **URL & Phishing Detector:** Analyzes live web endpoints, suspicious landing pages, and domains against heuristic risk rules and blacklists.
-- 🔎 **Threat Intelligence Search:** Instant reputation lookups by SHA-256 / MD5 hash, domain name, or IPv4 address.
-- 🛡️ **72+ Security Vendors:** Engine breakdown across *CrowdStrike Falcon, Kaspersky, Microsoft Defender, BitDefender, Sophos, SentinelOne, ESET-NOD32, Fortinet, Google Safe Browsing*, and more.
-- 🔒 **Zero API Key Leakage:** Uses serverless proxying (`/api/scan`) with environment variables so your VirusTotal API key remains strictly secret.
-- 📊 **Telemetry & Export:** Inspect file entropy, MIME types, and export structured `.json` threat intelligence reports.
-- 🎨 **Sleek Aesthetic:** Minimalist obsidian dark theme accented with royal purple and vibrant orange styling.
+By combining in-browser **W3C Web Cryptography API** execution with asynchronous **Vercel Serverless Gateways**, AuguxtScan generates binary checksums locally in memory before querying an aggregated multi-vendor threat matrix.
 
 ---
 
-## 🏗️ Architecture
+## ⚡ Key Capabilities
+
+- **🔒 Client-Side Binary Hashing:** Computes cryptographic `SHA-256`, `MD5`, and `SHA-1` hashes locally in browser memory using hardware acceleration—raw binaries never leave your machine for known hash queries.
+- **🌐 URL & Phishing Inspection:** Dissects live web endpoints, deceptive domains, and credential harvesting lures against real-time blacklists.
+- **🛡️ 72+ Multi-Vendor Threat Matrix:** Aggregates real-time detection telemetry from *CrowdStrike Falcon, Microsoft Defender, Kaspersky, BitDefender, Sophos, SentinelOne, ESET-NOD32, Fortinet, Google Safe Browsing*, and more.
+- **🔑 Zero Key Exposure Architecture:** Secrets are isolated in cloud-side serverless environment variables (`process.env.VIRUSTOTAL_API_KEY`), preventing credential leakage on public repositories.
+- **📊 Diagnostic Telemetry:** Analyzes file entropy, MIME classification, and exports structured RFC-compliant `.json` intelligence reports.
+- **🎨 Minimalist Obsidian UI:** High-contrast, zero-dependency interface built with pure HTML5, modern CSS3 variables, and ES6+ JavaScript.
+
+---
+
+## 🏗️ Architecture & Security Model
 
 ```
-┌───────────────────────────┐
-│     User Browser (Client) │
-│  - Drag & Drop / URL Input│
-│  - Native WebCrypto SHA256│
-└─────────────┬─────────────┘
-              │  POST /api/scan (JSON)
-              ▼
-┌───────────────────────────┐
-│  Vercel Serverless Backend│
-│  - Reads process.env.VT   │
-│  - Secret Proxying        │
-└─────────────┬─────────────┘
-              │  x-apikey: [SECRET]
-              ▼
-┌───────────────────────────┐
-│    VirusTotal v3 API      │
-│  - 72+ Antivirus Engines  │
-│  - Threat Telemetry       │
-└───────────────────────────┘
+┌────────────────────────────────┐
+│      Client Browser (User)     │
+│  • Local File / URL / Hash     │
+│  • WebCrypto SHA-256 in memory │
+└───────────────┬────────────────┘
+                │
+                │ HTTPS POST (JSON Payload: { type, query })
+                ▼
+┌────────────────────────────────┐
+│   Vercel Serverless Gateway    │
+│         (/api/scan.js)         │
+│  • Injects process.env.VT_KEY  │
+│  • CORS & Sanitization Layer   │
+└───────────────┬────────────────┘
+                │
+                │ Authenticated REST Request (x-apikey)
+                ▼
+┌────────────────────────────────┐
+│       VirusTotal v3 API        │
+│  • 72+ Antivirus Engines       │
+│  • Threat Categorization       │
+└────────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Quick Setup & Deployment
+## 🚀 Deployment & Setup
 
-### 1. Clone Repository
+### 1. Clone & Configure
 ```bash
-git clone https://github.com/auguxt/meowscanner.git
-cd meowscanner
+git clone https://github.com/auguxt/Auguxt-Scan.git
+cd Auguxt-Scan
 ```
 
 ### 2. Deploy to Vercel
-1. Push your repository to GitHub.
-2. Import the project into **[Vercel](https://vercel.com/)**.
-3. Add the following **Environment Variable** in Vercel Settings:
+1. Import the repository into your **[Vercel Dashboard](https://vercel.com/)**.
+2. Add the following **Environment Variable** in Project Settings:
    - **Key:** `VIRUSTOTAL_API_KEY`
-   - **Value:** `your_64_character_virustotal_api_key`
-4. Deploy!
+   - **Value:** `[Your 64-character VirusTotal v3 API Key]`
+3. Click **Deploy**.
 
-### 3. Connect Custom Domain (Optional)
-To map to a custom subdomain (e.g. `scan.auguxt.dev`):
-1. In Vercel Project Settings $\rightarrow$ **Domains** $\rightarrow$ Add `scan.auguxt.dev`.
-2. In your DNS manager (e.g. Name.com / Cloudflare), add a **CNAME** record:
-   - **Host:** `scan`
-   - **Target / Value:** `cname.vercel-dns.com`
+### 3. Custom Subdomain Setup (e.g., `scan.auguxt.dev`)
+In your DNS provider (Name.com, Cloudflare, etc.), create a **CNAME** record:
+| Type | Host / Name | Target / Value | TTL |
+| :--- | :--- | :--- | :--- |
+| `CNAME` | `scan` | `cname.vercel-dns.com` | `Automatic / 300` |
+
+---
+
+## 🔌 API Reference
+
+### `POST /api/scan`
+Executes an authenticated lookup against upstream threat intelligence feeds.
+
+#### Request Headers
+```http
+Content-Type: application/json
+```
+
+#### Request Body
+```json
+{
+  "type": "hash",
+  "query": "44d88612fea8a8f36de82e1278abb02f"
+}
+```
+*Supported `type` values: `"hash"`, `"file"`, `"url"`, `"domain"`, `"ip"`.*
+
+#### Response Sample
+```json
+{
+  "found": true,
+  "data": {
+    "attributes": {
+      "last_analysis_stats": {
+        "harmless": 0,
+        "malicious": 62,
+        "suspicious": 0,
+        "undetected": 10
+      }
+    }
+  }
+}
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** Vanilla HTML5, CSS3 Variables, Modern ES6+ JavaScript, Web Crypto API.
-- **Backend:** Node.js Serverless Function (`/api/scan.js`) on Vercel.
-- **Threat Feeds:** VirusTotal v3 REST API.
-- **Typography:** Plus Jakarta Sans & JetBrains Mono.
+- **Frontend:** Pure HTML5, CSS3, Modern ES6+ JavaScript, W3C Web Cryptography API.
+- **Backend:** Node.js Serverless Gateway (`/api/scan.js`) running on Vercel Edge.
+- **Threat Intelligence:** VirusTotal v3 REST API.
+- **Fonts:** Plus Jakarta Sans & JetBrains Mono.
 
 ---
 
-## 📜 License
+## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+This project is open-source software licensed under the **[MIT License](LICENSE)**.
 
 ---
 
 <div align="center">
 
-Crafted with 🐾 by **[Syed Sameer](https://auguxt.dev)**  
+Crafted with security & precision by **[Syed Sameer](https://auguxt.dev)**  
 *Cybersecurity • Systems • auguxt.dev*
 
 </div>
